@@ -11,8 +11,11 @@ x = torch.linspace(-4, 4, 1_000_000, device="cuda")
 y = erfi(x)
 ```
 
-The package supports `torch.float32` and `torch.float64`, preserves tensor
-shape/dtype/device, and works with `torch.compile(fullgraph=True)`.
+The package supports `torch.float32` and `torch.float64` and preserves tensor
+shape, dtype, and device. Its pure-PyTorch graph is compatible with
+`torch.compile(fullgraph=True, backend="eager")`. Inductor compilation depends
+on a working platform compiler or Triton installation and is validated
+separately on supported Linux CUDA environments.
 
 ## Backends
 
@@ -26,7 +29,7 @@ No CUDA toolkit or native compiler is required.
 ## Installation
 
 ```bash
-pip install .
+pip install erfi-pytorch
 ```
 
 For development and reference tests:
@@ -58,10 +61,11 @@ premature overflow in `exp(x^2)`.
 
 The polynomial coefficients originate from Steven G. Johnson's
 MIT-licensed Faddeeva implementation. The original license notice is retained
-in [`third_party/faddeeva`](third_party/faddeeva/).
+in
+[`third_party/faddeeva`](https://github.com/ZhichaoZhu/erfi_pytorch/tree/main/third_party/faddeeva).
 
 The detailed implementation notes are in
-[`docs/faddeeva.md`](docs/faddeeva.md).
+[`docs/faddeeva.md`](https://github.com/ZhichaoZhu/erfi_pytorch/blob/main/docs/faddeeva.md).
 
 ## License
 
@@ -74,6 +78,8 @@ Massachusetts Institute of Technology attribution and MIT license notice.
 - Inputs must be real `torch.float32` or `torch.float64` tensors.
 - This release is forward-only. `requires_grad=True` raises an error.
 - Triton acceleration currently targets NVIDIA CUDA.
+- Windows uses the pure-PyTorch CUDA backend because upstream Triton support
+  is not generally available there.
 
 ## Benchmark
 

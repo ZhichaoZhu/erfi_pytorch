@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=68"]
+requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -8,12 +8,13 @@ version = "0.1.0"
 description = "GPU-accelerated imaginary error function for real PyTorch tensors"
 readme = "README.md"
 requires-python = ">=3.10"
-license = {file = "LICENSE"}
+license = "MIT"
+license-files = ["LICENSE", "third_party/faddeeva/LICENSE"]
 authors = [{name = "erfi-pytorch contributors"}]
+keywords = ["pytorch", "cuda", "triton", "special-functions", "erfi"]
 dependencies = ["torch>=2.7"]
 classifiers = [
   "Development Status :: 3 - Alpha",
-  "License :: OSI Approved :: MIT License",
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
@@ -26,6 +27,12 @@ classifiers = [
 test = ["mpmath>=1.3", "pytest>=8", "scipy>=1.11"]
 benchmark = ["scipy>=1.11"]
 triton = ["triton>=3.3; platform_system == 'Linux'"]
+
+[project.urls]
+Homepage = "https://github.com/ZhichaoZhu/erfi_pytorch"
+Repository = "https://github.com/ZhichaoZhu/erfi_pytorch.git"
+Issues = "https://github.com/ZhichaoZhu/erfi_pytorch/issues"
+Documentation = "https://github.com/ZhichaoZhu/erfi_pytorch/blob/main/docs/faddeeva.md"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
