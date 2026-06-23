@@ -28,11 +28,13 @@ No CUDA toolkit or native compiler is required.
 
 ## Installation
 
+Install the released package from PyPI:
+
 ```bash
 pip install erfi-pytorch
 ```
 
-For development and reference tests:
+To install from a local checkout for development and reference tests:
 
 ```bash
 pip install -e ".[test]"
