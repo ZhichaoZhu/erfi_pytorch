@@ -90,7 +90,9 @@ python benchmarks/benchmark_erfi.py --dtype float32
 ```
 
 The benchmark covers powers of two from `2^10` through `2^24` and reports
-eager PyTorch, compiled PyTorch, eager dispatch, and compiled dispatch.
+CUDA timings for eager PyTorch, compiled PyTorch, eager dispatch, and compiled
+dispatch, plus CPU timings for `erfi_pytorch.erfi` and `scipy.special.erfi`
+on the same values.
 Before timing, it compares the operator against `scipy.special.erfi` and
 reports maximum absolute error, maximum and mean relative error, and infinity
 mismatches. Use `--precision-elements` to change the comparison sample count

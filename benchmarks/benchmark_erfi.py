@@ -26,6 +26,27 @@ def _time_cuda(function, values: torch.Tensor, repeats: int = 50) -> float:
     return statistics.median(samples) * 1e6
 
 
+def _time_cpu(function, values: np.ndarray | torch.Tensor, repeats: int = 50) -> float:
+    for _ in range(10):
+        function(values)
+
+    samples = []
+    for _ in range(repeats):
+        start = time.perf_counter()
+        function(values)
+        samples.append(time.perf_counter() - start)
+    return statistics.median(samples) * 1e6
+
+
+def _erfi_cpu(values: torch.Tensor) -> torch.Tensor:
+    return erfi(values)
+
+
+def _scipy_erfi(values: np.ndarray) -> np.ndarray:
+    with np.errstate(over="ignore", invalid="ignore"):
+        return special.erfi(values)
+
+
 def _make_values(
     count: int,
     dtype: torch.dtype,
@@ -118,10 +139,16 @@ def main() -> None:
         compile_enabled = False
         print(f"# compiled modes unavailable: {type(error).__name__}: {error}")
 
-    print("elements,eager_torch_us,compiled_torch_us,eager_dispatch_us,compiled_dispatch_us")
+    print(
+        "elements,eager_torch_cuda_us,compiled_torch_cuda_us,"
+        "eager_dispatch_cuda_us,compiled_dispatch_cuda_us,"
+        "erfi_pytorch_cpu_us,scipy_cpu_us"
+    )
     for exponent in range(10, 25):
         count = 1 << exponent
         values = _make_values(count, dtype, args.distribution, "cuda")
+        cpu_values = values.cpu()
+        scipy_values = cpu_values.numpy()
 
         timings = [_time_cuda(erfi_torch, values)]
         timings.append(
@@ -133,6 +160,8 @@ def main() -> None:
             if compile_enabled
             else float("nan")
         )
+        timings.append(_time_cpu(_erfi_cpu, cpu_values))
+        timings.append(_time_cpu(_scipy_erfi, scipy_values))
         print(f"{count}," + ",".join(f"{timing:.3f}" for timing in timings))
 
 
